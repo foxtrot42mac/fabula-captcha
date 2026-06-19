@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fabula CAPTCHA — Integration Example</title>
+<style>
+  body { font-family: sans-serif; max-width: 480px; margin: 60px auto; padding: 24px; }
+  .captcha-box { border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 16px 0; }
+  input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; }
+  button { margin-top: 12px; padding: 10px 24px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; }
+</style>
+</head>
+<body>
+<h2>Contact Form</h2>
+<form id="myForm">
+  <input type="text" name="email" placeholder="Your email" required style="margin-bottom:12px"><br>
+
+  <!-- Fabula CAPTCHA widget -->
+  <div class="captcha-box">
+    <div id="captcha-img" style="margin-bottom:10px;"></div>
+    <p id="captcha-prompt" style="font-size:14px;color:#475569;margin-bottom:8px;"></p>
+    <input type="hidden" id="captcha-id">
+    <input type="text" id="captcha-phrase" placeholder="Describe the image..." autocomplete="off">
+  </div>
+
+  <button type="submit">Send</button>
+  <p id="status" style="margin-top:12px;font-size:14px;"></p>
+</form>
+
+<script>
+const CAPTCHA_BASE = 'https://foxtrot42.org'; // change to your domain
+
+async function loadCaptcha() {
+  const r = await fetch(CAPTCHA_BASE + '/captcha/challenge');
+  const {id, image_svg, prompt} = await r.json();
+  document.getElementById('captcha-img').innerHTML = image_svg;
+  document.getElementById('captcha-id').value = id;
+  document.getElementById('captcha-prompt').textContent = prompt;
+}
+
+document.getElementById('myForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('captcha-id').value;
+  const phrase = document.getElementById('captcha-phrase').value;
+
+  const r = await fetch(CAPTCHA_BASE + '/captcha/verify', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({id, phrase})
+  });
+  const {ok} = await r.json();
+
+  if (!ok) {
+    document.getElementById('status').textContent = '✗ CAPTCHA failed — try again.';
+    document.getElementById('status').style.color = '#dc2626';
+    loadCaptcha(); // refresh challenge
+    return;
+  }
+
+  document.getElementById('status').textContent = '✓ Form submitted successfully!';
+  document.getElementById('status').style.color = '#16a34a';
+});
+
+loadCaptcha();
+</script>
+</body>
+</html>
