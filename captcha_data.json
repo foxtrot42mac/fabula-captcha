@@ -4,13 +4,24 @@
       "id": "blue_shoe",
       "prompt": "What do you see in the image?",
       "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='200' height='200'><rect width='200' height='200' fill='#f0f4ff'/><ellipse cx='100' cy='140' rx='70' ry='20' fill='#1e3a8a' opacity='0.15'/><path d='M40 130 Q50 100 80 95 L130 92 Q160 92 165 105 L168 120 Q168 132 155 135 L45 138 Z' fill='#2563eb'/><path d='M40 130 L45 138 L155 135 L165 120 L165 110 Q140 118 100 118 Q70 118 40 115 Z' fill='#1d4ed8'/><path d='M80 95 L85 70 Q88 58 100 55 Q115 52 120 60 L125 75 L130 92 Z' fill='#3b82f6'/><path d='M85 70 Q95 65 110 68 L120 78 L115 80 Q100 76 88 78 Z' fill='#60a5fa'/><circle cx='70' cy='132' r='6' fill='#1e3a8a'/><circle cx='95' cy='133' r='6' fill='#1e3a8a'/><circle cx='120' cy='133' r='6' fill='#1e3a8a'/><circle cx='145' cy='131' r='6' fill='#1e3a8a'/><rect x='38' y='134' width='120' height='8' rx='4' fill='#1e3a8a'/></svg>",
-      "accepted": ["blue shoe", "old shoe", "worn boot", "blue boot", "sneaker", "blue sneaker", "a blue shoe", "a shoe", "shoe", "boot"]
+      "select": "one",
+      "buttons": ["old shoes", "blue sky", "new boot", "worn sneaker", "red car"],
+      "valid_hashes": [
+        "60d12b7e998bebfe1086a95bdf987fe496d94ffd6517c000d3bd580f18e2486a",
+        "ebf312de4c3070f0e6ea385631ba7cdfc808b88327ce81b23a6cccb68029f53c",
+        "da3c13f6bc9f5475d680221ef97142b1fa4dd9e8ac30917c8e00a133f06fad35"
+      ]
     },
     {
       "id": "red_apple",
       "prompt": "What do you see in the image?",
       "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='200' height='200'><rect width='200' height='200' fill='#fff5f5'/><ellipse cx='100' cy='158' rx='55' ry='12' fill='#991b1b' opacity='0.15'/><path d='M100 55 Q130 45 148 70 Q165 95 160 130 Q155 160 130 168 Q115 174 100 168 Q85 174 70 168 Q45 160 40 130 Q35 95 52 70 Q70 45 100 55 Z' fill='#dc2626'/><path d='M100 55 Q115 48 125 58 Q138 70 138 90 Q115 85 100 90 Q85 85 65 90 Q65 68 78 58 Q88 48 100 55 Z' fill='#ef4444'/><path d='M85 45 Q90 30 100 28 Q108 30 105 45 Q100 50 95 47 Z' fill='#16a34a'/><rect x='97' y='25' width='5' height='22' rx='2' fill='#92400e'/><path d='M102 32 Q115 25 122 30 Q118 38 108 40 Z' fill='#16a34a'/><ellipse cx='75' cy='95' rx='12' ry='18' fill='#fca5a5' opacity='0.4'/></svg>",
-      "accepted": ["red apple", "apple", "an apple", "a red apple", "fruit", "red fruit", "ripe apple"]
+      "select": "one",
+      "buttons": ["red apple", "old door", "ripe apple", "blue water", "green leaf"],
+      "valid_hashes": [
+        "510e9cd005e362235259c1dbb49fe549fa788a63b29535195f9d396f79e9a05b",
+        "786a7c7b54730d39c108fbba633f9f9edd5db13aa374e1a833d9dd166deb8f8e"
+      ]
     }
   ]
 }

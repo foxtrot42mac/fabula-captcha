@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fabula CAPTCHA — phrase-based image CAPTCHA server
+Fabula CAPTCHA - phrase-based image CAPTCHA server
 Port 8019
 """
 
@@ -24,176 +24,13 @@ def normalize(phrase: str) -> str:
 def phrase_hash(phrase: str) -> str:
     return hashlib.sha256(normalize(phrase).encode()).hexdigest()
 
-# Precompute accepted hash sets
+# Precompute valid hash sets from valid_hashes field
 HASH_MAP = {}
 for ch in CAPTCHA_DATA["challenges"]:
-    HASH_MAP[ch["id"]] = {phrase_hash(p) for p in ch["accepted"]}
+    HASH_MAP[ch["id"]] = set(ch["valid_hashes"])
 
-HTML_PAGE = """<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fabula CAPTCHA — Demo</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Space Grotesk', sans-serif;
-    background: #f8fafc;
-    color: #0f172a;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-  .card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 36px;
-    max-width: 420px;
-    width: 100%;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-  }
-  .logo {
-    font-size: 13px;
-    font-weight: 600;
-    color: #2563eb;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-  h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
-  .sub { font-size: 14px; color: #64748b; margin-bottom: 28px; }
-  .image-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 220px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    position: relative;
-  }
-  .image-box svg { max-width: 200px; max-height: 200px; }
-  .prompt { font-size: 14px; color: #475569; margin-bottom: 12px; font-weight: 500; }
-  input[type=text] {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 15px;
-    color: #0f172a;
-    outline: none;
-    transition: border-color 0.15s;
-    margin-bottom: 14px;
-  }
-  input[type=text]:focus { border-color: #2563eb; }
-  .btn-row { display: flex; gap: 10px; }
-  button {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, opacity 0.15s;
-  }
-  .btn-verify { background: #2563eb; color: white; }
-  .btn-verify:hover { background: #1d4ed8; }
-  .btn-new { background: #f1f5f9; color: #475569; }
-  .btn-new:hover { background: #e2e8f0; }
-  .result {
-    margin-top: 16px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    display: none;
-  }
-  .result.ok { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-  .result.fail { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
-  .footer {
-    margin-top: 28px;
-    font-size: 12px;
-    color: #94a3b8;
-    text-align: center;
-  }
-  .footer a { color: #2563eb; text-decoration: none; }
-</style>
-</head>
-<body>
-<div class="card">
-  <div class="logo">Fabula CAPTCHA</div>
-  <h1>Prove you're human</h1>
-  <p class="sub">Describe what you see in the image below</p>
-  <div class="image-box" id="imgBox">
-    <div style="color:#94a3b8;font-size:14px;">Loading...</div>
-  </div>
-  <p class="prompt" id="promptText"></p>
-  <input type="text" id="phrase" placeholder="Type your answer..." autocomplete="off" />
-  <div class="btn-row">
-    <button class="btn-verify" onclick="verify()">Verify</button>
-    <button class="btn-new" onclick="loadChallenge()">New image</button>
-  </div>
-  <div class="result" id="result"></div>
-</div>
-<div class="footer">
-  <a href="https://github.com/foxtrot42mac/fabula-captcha">fabula-captcha</a> &mdash;
-  self-hosted, no tracking, no ML
-</div>
-<script>
-let currentId = null;
+HTML_PAGE = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Fabula CAPTCHA — Demo</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">\n<style>\n  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\n  body { font-family: \'Space Grotesk\', sans-serif; background: #f8fafc; color: #0f172a; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }\n  .card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 36px; max-width: 420px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }\n  .logo { font-size: 13px; font-weight: 600; color: #2563eb; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 24px; }\n  h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }\n  .sub { font-size: 14px; color: #64748b; margin-bottom: 28px; }\n  .image-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; height: 220px; margin-bottom: 20px; overflow: hidden; }\n  .image-box svg { max-width: 200px; max-height: 200px; }\n  .prompt { font-size: 14px; color: #475569; margin-bottom: 12px; font-weight: 500; }\n  .btn-choices { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }\n  .btn-choice { width: 100%; padding: 11px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; font-family: inherit; font-size: 14px; font-weight: 500; color: #0f172a; cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.15s; }\n  .btn-choice:hover { border-color: #2563eb; background: #eff6ff; }\n  .btn-choice.selected { border-color: #2563eb; background: #dbeafe; color: #1d4ed8; }\n  input[type=text] { width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 15px; color: #0f172a; outline: none; transition: border-color 0.15s; margin-bottom: 14px; }\n  input[type=text]:focus { border-color: #2563eb; }\n  .btn-row { display: flex; gap: 10px; }\n  button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; }\n  .btn-verify { background: #2563eb; color: white; }\n  .btn-verify:hover { background: #1d4ed8; }\n  .btn-new { background: #f1f5f9; color: #475569; }\n  .btn-new:hover { background: #e2e8f0; }\n  .result { margin-top: 16px; padding: 12px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; }\n  .result.ok { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }\n  .result.fail { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }\n  .footer { margin-top: 28px; font-size: 12px; color: #94a3b8; text-align: center; }\n  .footer a { color: #2563eb; text-decoration: none; }\n</style>\n</head>\n<body>\n<div class="card">\n  <div class="logo">Fabula CAPTCHA</div>\n  <h1>Prove you\'re human</h1>\n  <p class="sub" id="subText">Describe what you see in the image below</p>\n  <div class="image-box" id="imgBox"><div style="color:#94a3b8;font-size:14px;">Loading...</div></div>\n  <p class="prompt" id="promptText"></p>\n  <div id="inputArea"></div>\n  <div class="btn-row">\n    <button class="btn-verify" onclick="verify()">Verify</button>\n    <button class="btn-new" onclick="loadChallenge()">New image</button>\n  </div>\n  <div class="result" id="result"></div>\n</div>\n<div class="footer">\n  <a href="https://github.com/foxtrot42mac/fabula-captcha">fabula-captcha</a> &mdash; self-hosted, no tracking, no ML\n</div>\n<script>\nlet currentId = null, currentButtons = null, currentSelect = null, selectedPhrases = [];\n\nfunction renderInput(data) {\n  const area = document.getElementById(\'inputArea\');\n  if (data.buttons && data.buttons.length) {\n    currentButtons = data.buttons; currentSelect = data.select; selectedPhrases = [];\n    const lbl = currentSelect === \'all\' ? \'Select all that apply\'\n      : (typeof currentSelect === \'number\' ? \'Select \' + currentSelect : \'Select one\');\n    document.getElementById(\'subText\').textContent = lbl;\n    var html = \'<div class="btn-choices">\';\n    data.buttons.forEach(function(btn, i) {\n      html += \'<button class="btn-choice" data-idx="\' + i + \'" onclick="toggleChoice(this)">\' + btn + \'</button>\';\n    });\n    html += \'</div>\';\n    area.innerHTML = html;\n  } else {\n    currentButtons = null;\n    document.getElementById(\'subText\').textContent = \'Describe what you see in the image below\';\n    area.innerHTML = \'<input type="text" id="phrase" placeholder="Type your answer..." autocomplete="off" />\';\n    document.getElementById(\'phrase\').addEventListener(\'keydown\', function(e) { if (e.key === \'Enter\') verify(); });\n  }\n}\n\nfunction toggleChoice(el) {\n  var phrase = currentButtons[parseInt(el.dataset.idx)];\n  var single = currentSelect === \'one\' || currentSelect === 1;\n  if (single) { document.querySelectorAll(\'.btn-choice\').forEach(function(b) { b.classList.remove(\'selected\'); }); selectedPhrases = []; }\n  if (el.classList.contains(\'selected\')) { el.classList.remove(\'selected\'); selectedPhrases = selectedPhrases.filter(function(p) { return p !== phrase; }); }\n  else { el.classList.add(\'selected\'); selectedPhrases.push(phrase); }\n}\n\nasync function loadChallenge() {\n  document.getElementById(\'result\').style.display = \'none\';\n  document.getElementById(\'imgBox\').innerHTML = \'<div style="color:#94a3b8;font-size:14px;">Loading...</div>\';\n  var r = await fetch(\'/captcha/challenge\');\n  var data = await r.json();\n  currentId = data.id;\n  document.getElementById(\'imgBox\').innerHTML = data.image_svg;\n  document.getElementById(\'promptText\').textContent = data.prompt;\n  renderInput(data);\n}\n\nasync function verify() {\n  var phrases = [];\n  if (currentButtons) {\n    phrases = selectedPhrases;\n    if (!phrases.length) return;\n  } else {\n    var v = document.getElementById(\'phrase\').value.trim();\n    if (!v || !currentId) return;\n    phrases = [v];\n  }\n  var r = await fetch(\'/captcha/verify\', {\n    method: \'POST\',\n    headers: {\'Content-Type\': \'application/json\'},\n    body: JSON.stringify({id: currentId, phrases: phrases})\n  });\n  var data = await r.json();\n  var el = document.getElementById(\'result\');\n  el.style.display = \'block\';\n  if (data.ok) { el.className = \'result ok\'; el.textContent = \'✓ Verified! You passed the CAPTCHA.\'; }\n  else { el.className = \'result fail\'; el.textContent = \'✗ Not quite — try a different answer.\'; }\n}\n\nloadChallenge();\n</script>\n</body>\n</html>'
 
-async function loadChallenge() {
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('phrase').value = '';
-  document.getElementById('imgBox').innerHTML = '<div style="color:#94a3b8;font-size:14px;">Loading...</div>';
-  const r = await fetch('/captcha/challenge');
-  const data = await r.json();
-  currentId = data.id;
-  document.getElementById('imgBox').innerHTML = data.image_svg;
-  document.getElementById('promptText').textContent = data.prompt;
-}
-
-async function verify() {
-  const phrase = document.getElementById('phrase').value.trim();
-  if (!phrase || !currentId) return;
-  const r = await fetch('/captcha/verify', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({id: currentId, phrase})
-  });
-  const data = await r.json();
-  const el = document.getElementById('result');
-  el.style.display = 'block';
-  if (data.ok) {
-    el.className = 'result ok';
-    el.textContent = '✓ Verified! You passed the CAPTCHA.';
-  } else {
-    el.className = 'result fail';
-    el.textContent = '✗ Not quite — try a different description.';
-  }
-}
-
-document.getElementById('phrase').addEventListener('keydown', e => {
-  if (e.key === 'Enter') verify();
-});
-
-loadChallenge();
-</script>
-</body>
-</html>
-"""
 
 class CaptchaHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
@@ -231,11 +68,18 @@ class CaptchaHandler(BaseHTTPRequestHandler):
 
         elif path == "/captcha/challenge":
             ch = random.choice(CAPTCHA_DATA["challenges"])
-            self.send_json(200, {
+            resp = {
                 "id": ch["id"],
                 "image_svg": ch["svg"],
-                "prompt": ch["prompt"]
-            })
+                "prompt": ch["prompt"],
+            }
+            # Button-mix: shuffle, expose select; never expose valid_hashes
+            if "buttons" in ch:
+                buttons = list(ch["buttons"])
+                random.shuffle(buttons)
+                resp["buttons"] = buttons
+                resp["select"] = ch.get("select", "one")
+            self.send_json(200, resp)
 
         else:
             self.send_json(404, {"error": "not found"})
@@ -252,14 +96,35 @@ class CaptchaHandler(BaseHTTPRequestHandler):
                 return
 
             cid = body.get("id", "")
-            phrase = body.get("phrase", "")
+            # Accept "phrases" array; legacy "phrase" string also supported
+            phrases = body.get("phrases")
+            if phrases is None:
+                legacy = body.get("phrase", "")
+                phrases = [legacy] if legacy else []
+
+            if not isinstance(phrases, list):
+                self.send_json(400, {"error": "phrases must be an array"})
+                return
 
             if cid not in HASH_MAP:
                 self.send_json(400, {"error": "unknown challenge id"})
                 return
 
-            h = phrase_hash(phrase)
-            ok = h in HASH_MAP[cid]
+            valid_set = HASH_MAP[cid]
+            ch = CHALLENGE_MAP[cid]
+            select = ch.get("select", "one")
+
+            if select == "all":
+                submitted_hashes = {phrase_hash(p) for p in phrases}
+                ok = submitted_hashes == valid_set
+            elif select == "one":
+                ok = any(phrase_hash(p) in valid_set for p in phrases)
+            elif isinstance(select, int):
+                valid_submitted = [p for p in phrases if phrase_hash(p) in valid_set]
+                ok = len(set(valid_submitted)) >= select
+            else:
+                ok = any(phrase_hash(p) in valid_set for p in phrases)
+
             self.send_json(200, {"ok": ok})
         else:
             self.send_json(404, {"error": "not found"})
