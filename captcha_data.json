@@ -1,26 +1,69 @@
 {
   "challenges": [
     {
-      "id": "blue_shoe",
-      "prompt": "What do you see in the image?",
-      "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='200' height='200'><rect width='200' height='200' fill='#f0f4ff'/><ellipse cx='100' cy='140' rx='70' ry='20' fill='#1e3a8a' opacity='0.15'/><path d='M40 130 Q50 100 80 95 L130 92 Q160 92 165 105 L168 120 Q168 132 155 135 L45 138 Z' fill='#2563eb'/><path d='M40 130 L45 138 L155 135 L165 120 L165 110 Q140 118 100 118 Q70 118 40 115 Z' fill='#1d4ed8'/><path d='M80 95 L85 70 Q88 58 100 55 Q115 52 120 60 L125 75 L130 92 Z' fill='#3b82f6'/><path d='M85 70 Q95 65 110 68 L120 78 L115 80 Q100 76 88 78 Z' fill='#60a5fa'/><circle cx='70' cy='132' r='6' fill='#1e3a8a'/><circle cx='95' cy='133' r='6' fill='#1e3a8a'/><circle cx='120' cy='133' r='6' fill='#1e3a8a'/><circle cx='145' cy='131' r='6' fill='#1e3a8a'/><rect x='38' y='134' width='120' height='8' rx='4' fill='#1e3a8a'/></svg>",
+      "id": "blue_door",
+      "prompt": "What does this look like?",
+      "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='200' height='200'><rect width='200' height='200' fill='#f0f4ff'/><ellipse cx='100' cy='185' rx='60' ry='6' fill='#1e3a8a' opacity='0.12'/><rect x='42' y='28' width='116' height='158' rx='3' fill='#1e3a8a'/><rect x='50' y='35' width='100' height='148' rx='2' fill='#2563eb'/><rect x='60' y='44' width='80' height='52' rx='3' fill='#3b82f6'/><rect x='63' y='47' width='74' height='46' rx='2' fill='#2563eb'/><rect x='60' y='104' width='80' height='68' rx='3' fill='#3b82f6'/><rect x='63' y='107' width='74' height='62' rx='2' fill='#2563eb'/><rect x='128' y='128' width='10' height='28' rx='5' fill='#1e3a8a'/><circle cx='133' cy='140' r='7' fill='#60a5fa'/><circle cx='131' cy='138' r='3' fill='#93c5fd' opacity='0.6'/><circle cx='133' cy='150' r='2' fill='#1e3a8a'/><line x1='100' y1='35' x2='100' y2='183' stroke='#1d4ed8' stroke-width='1' opacity='0.4'/></svg>",
       "select": "one",
-      "buttons": ["old shoes", "blue sky", "new boot", "worn sneaker", "red car"],
       "valid_hashes": [
-        "60d12b7e998bebfe1086a95bdf987fe496d94ffd6517c000d3bd580f18e2486a",
-        "ebf312de4c3070f0e6ea385631ba7cdfc808b88327ce81b23a6cccb68029f53c",
-        "da3c13f6bc9f5475d680221ef97142b1fa4dd9e8ac30917c8e00a133f06fad35"
+        "e25dad4e3f77536102739c6d8a55d00a801532e155dea16f88368d2743aafb85",
+        "a8eccd2f3db28732be0e0a39001cdf5fa6dffdc12dda8bcbc3d9cc48231dafab",
+        "c1fb4ade809c21248b4160889d4e62093c039fa640f40cb37e3f64f3e2fc4b01",
+        "d09b2464127094bb31e1002525ac2fd67aafe0cf039be07d3e588a0c89419224",
+        "74e09770937204b2afc02762dcacdbdecf073fb6b100a1f3bb8e48927c373bb7",
+        "89572d73d5304b1c939ea3d24f2e357779c678eac34f13da803ba7b43877a817"
+      ],
+      "correct": [
+        "blue door"
+      ],
+      "near_distractors": [
+        "blue apple",
+        "blue hat",
+        "yellow door",
+        "red door",
+        "white door"
+      ],
+      "far_distractors": [
+        "red apple",
+        "yellow sun",
+        "yellow orange",
+        "red shoe",
+        "green car"
       ]
     },
     {
       "id": "red_apple",
-      "prompt": "What do you see in the image?",
+      "prompt": "What does this look like?",
       "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='200' height='200'><rect width='200' height='200' fill='#fff5f5'/><ellipse cx='100' cy='158' rx='55' ry='12' fill='#991b1b' opacity='0.15'/><path d='M100 55 Q130 45 148 70 Q165 95 160 130 Q155 160 130 168 Q115 174 100 168 Q85 174 70 168 Q45 160 40 130 Q35 95 52 70 Q70 45 100 55 Z' fill='#dc2626'/><path d='M100 55 Q115 48 125 58 Q138 70 138 90 Q115 85 100 90 Q85 85 65 90 Q65 68 78 58 Q88 48 100 55 Z' fill='#ef4444'/><path d='M85 45 Q90 30 100 28 Q108 30 105 45 Q100 50 95 47 Z' fill='#16a34a'/><rect x='97' y='25' width='5' height='22' rx='2' fill='#92400e'/><path d='M102 32 Q115 25 122 30 Q118 38 108 40 Z' fill='#16a34a'/><ellipse cx='75' cy='95' rx='12' ry='18' fill='#fca5a5' opacity='0.4'/></svg>",
       "select": "one",
-      "buttons": ["red apple", "old door", "ripe apple", "blue water", "green leaf"],
       "valid_hashes": [
         "510e9cd005e362235259c1dbb49fe549fa788a63b29535195f9d396f79e9a05b",
-        "786a7c7b54730d39c108fbba633f9f9edd5db13aa374e1a833d9dd166deb8f8e"
+        "6e4f1f24b6a7892680376baaede71c5cdb79805ac16c0d09b2f45198ed08d3b2",
+        "74e09770937204b2afc02762dcacdbdecf073fb6b100a1f3bb8e48927c373bb7",
+        "8dfe5e6cf73b1d6b761fd2a2fbd30b37759f0abb0a386815b1398e89ae804bca",
+        "338c539ace81e3b375a2994eb162e0b1603ea33c03d04835595a9eabf3d902f6",
+        "2efe147f807a984572e45054d5d16169d9b8bdf4fcc0d45d12fb269a8be12f5b",
+        "ecf8f082ed6b538e9396d4067d44dd5e3ce7ee3db62170e16d3734ad5ad3e059",
+        "a8eccd2f3db28732be0e0a39001cdf5fa6dffdc12dda8bcbc3d9cc48231dafab"
+      ],
+      "correct": [
+        "red apple"
+      ],
+      "near_distractors": [
+        "red shoe",
+        "red door",
+        "red hat",
+        "yellow apple",
+        "green apple",
+        "orange apple",
+        "blue apple"
+      ],
+      "far_distractors": [
+        "blue door",
+        "yellow sun",
+        "yellow orange",
+        "green hat",
+        "white car"
       ]
     }
   ]

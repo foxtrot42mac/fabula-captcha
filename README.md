@@ -1,34 +1,40 @@
 # fabula-captcha
 
-**Phrase-based image CAPTCHA — no Google, no tracking, self-hosted.**
+**Image CAPTCHA based on visual similarity — no Google, no ML, self-hosted.**
 
-## What it does
+## Concept
 
-Fabula CAPTCHA shows the user a simple SVG image and asks them to describe it in words.
-The server normalises the phrase (), hashes it with SHA-256, and
-compares the hash against a pre-approved set for that challenge.
+The user sees a simple image (e.g. a blue door) and five labeled buttons.
+The prompt: **"Select all that look same."**
 
-No ML classifier. No third-party requests. Multiple accepted phrases per image
-give semantic flexibility while keeping the server logic trivial (~60 lines of Python).
+Some buttons share at least one visual parameter with the image (color or object type) — these pass.
+Some share nothing — these are traps.
 
-## Input modes
+**There is no single correct answer.** Any description that matches the image on at least one
+parameter (color, shape, object type) is accepted. This is the key mechanism:
 
-Input mode is a per-challenge setting configured in :
+- A **human** sees the image and intuitively selects what looks related.
+- A **bot** sees only text labels with no image context — random selection hits the traps.
 
-- **** (default) — user types a free-form description. The server exposes
-  nothing about the answer space; only SHA-256 hashes are kept in memory. Most
-  secure mode; slightly higher UX friction on mobile.
+The demo is intentionally simple — two challenges, pure SVG, stdlib Python.
+It demonstrates the principle, not a production image dataset.
 
-- **** — the challenge includes a  list (5 mixed options: valid
-  answers + distractors) and a  parameter. The client renders clickable
-  choices; the server verifies the chosen phrase(s) exactly like free-text mode.
-  The  parameter controls how many valid answers are required:
-  -  — any single valid choice passes
-  -  — all valid choices must be selected
-  -  (integer) — at least N valid choices must be selected
+## Live demo
 
-  The server shuffles  on every  request.
-   is **never** sent to the client.
+**[https://foxtrot42.org/captcha](https://foxtrot42.org/captcha)**
+
+## How it works
+
+Each challenge has two distractor pools:
+
+- **near** — descriptions that share one parameter with the image (valid answers)
+- **far** — descriptions that share no parameter (traps)
+
+On every request the server picks **1 correct + 2 near + 2 far** at random and shuffles.
+The mix changes each load; the rule stays the same.
+
+Verification: the server checks submitted phrases against SHA-256 hashes of valid descriptions.
+The plaintext vocabulary and the near/far split are **never sent to the client.**
 
 ## Quick start
 
@@ -36,77 +42,49 @@ Input mode is a per-challenge setting configured in :
 
 Requires Python 3.9+, stdlib only.
 
-## Live demo
-
-https://foxtrot42.org/captcha
-
 ## API
 
 | Method | Path | Description |
 |--------|------|-------------|
 | GET |  | HTML demo page |
 | GET |  | Random challenge JSON |
-| POST |  | Verify phrase(s) |
+| POST |  | Verify selection |
 
-**GET /captcha/challenge** — response:
-
-
-
- and  are included only for button-mode challenges.
-
-**POST /captcha/verify** — request body:
+**GET /captcha/challenge** response:
 
 
+ is **never** included in the response.
 
- is an array. Legacy  (string) is also accepted.
+**POST /captcha/verify**:
 
-Response:
-
-
+Response:  or 
 
 ## Security model
 
-Three asymmetries protect the closed vocabulary:
+**1. No exact answer** — the valid set is open (anything blue or anything door-shaped).
+An attacker cannot learn the rule from the button labels alone.
 
-1. **Knowledge asymmetry** —  (and the plaintext vocabulary) are
-   known only to the site owner. An attacker who intercepts the challenge sees
-   shuffled buttons but cannot distinguish valid from distractor without prior
-   knowledge.
+**2. Traps are invisible** — 2 out of 5 buttons are always traps.
+Random selection fails ~40% per attempt. Repeated attempts trigger rate limiting.
 
-2. **Economic asymmetry (LLM)** — a vision LLM can likely describe the image
-   correctly, but matching the closed vocabulary costs cents per attempt and
-   requires rate-limit evasion. A cheap defense becomes an expensive attack.
+**3. LLM solving is expensive** — a vision model can describe the image, but matching a
+private closed vocabulary costs API calls per attempt. Unlike reCAPTCHA, the vocabulary
+is private and changes per deployment.
 
-3. **Economic asymmetry (human farm)** — farms cannot see the vocabulary (unlike
-   reCAPTCHA where labels are public), so per-solve accuracy drops without prior
-   knowledge. Rate limiting + IP banning makes volume attacks impractical.
-
-See [](docs/FABULA_CAPTCHA.md) for full security analysis,
-what this does not replace (FIDO2, high-security auth), and extension concepts.
+See [docs/FABULA_CAPTCHA.md](docs/FABULA_CAPTCHA.md) for full analysis.
 
 ## Adding challenges
 
-Edit . For each challenge provide:
+Edit :
 
-- uid=1000(mac42) gid=1000(mac42) groups=1000(mac42),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users) — unique string key
--  — inline SVG image
--  — question shown to user
--  — list of 5 phrases (valid + distractors mixed)
--  — SHA-256 hashes of the valid phrases (normalized: strip + lower)
--  — , , or integer N
 
-Hash a phrase:
-60d12b7e998bebfe1086a95bdf987fe496d94ffd6517c000d3bd580f18e2486a
 
-The plaintext vocabulary never leaves the server. Only SHA-256 hashes are kept
-in memory at runtime.
+Hash a phrase: eea8383376247d02a3a32b9bad077bbf536d61ba1f3f54cf835074f28985992e  -
 
-## Integration
-
-See [](examples/integration.html) for a minimal
-drop-in widget (~30 lines of JS, no dependencies).
+The dataset can be labeled automatically using a vision LLM over your image set.
+See [docs/FABULA_CAPTCHA.md](docs/FABULA_CAPTCHA.md).
 
 ## License
 
-Non-commercial use is free. Commercial use requires written permission — hello@foxtrot42.org
+Non-commercial use is free. Commercial use requires written permission — hello@foxtrot42.org  
 See [LICENSE](LICENSE).
